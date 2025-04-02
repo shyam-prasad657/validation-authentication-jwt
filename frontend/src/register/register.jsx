@@ -127,7 +127,7 @@ export default function Register() {
       <p>
         Already registered?<br />
         <span>
-            <Link to  = '/signup'><a href="#">Sign In</a></Link>
+            <Link to  = '/login'><a href="#">Sign In</a></Link>
         </span>
       </p>
       </div>
