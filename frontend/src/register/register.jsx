@@ -13,6 +13,7 @@ export default function Register() {
   const userRef = useRef();
   const errRef = useRef();
 
+  const [email, setEmail] = useState('')
   const [user, setUser] = useState('');
   const [validName, setValidName] = useState(false);
   const [userFocus, setUserFocus] = useState(false);
@@ -50,21 +51,21 @@ export default function Register() {
 
   useEffect(() => {
     setErrMsg('');
-  }, [user, pwd, matchPwd]);
+  }, [user, pwd, matchPwd, email]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     //If submit button is enables with JS hack
     const v1 = USER_REGEX.test(user);
     const v2 = PWD_REGEX.test(pwd);
-    if(!v1 || !v2) {
+    if(!v1 || !v2 || !email) {
       setErrMsg('Invalid Entry');
       return false;
     } else {
       setSucess(true);
     }
     try {
-      const response = await axios.post('/register', {user, pwd},
+      const response = await axios.post('/register', {user, pwd, email},
         {
           headers : {'Content-Type' : 'application/json'},
           withCredentials : true
@@ -101,6 +102,19 @@ export default function Register() {
         {errMsg}
       </p>
       <form onSubmit={handleSubmit}>
+      {/* Email ID */}
+      <label htmlFor='email' className='form-label'>Email ID</label>
+      <input
+        type = 'email'
+        id = "email"
+        required
+        onChange={(e) => setEmail(e.target.value)}
+        aria-describedby='uidnote'
+        onFocus={() => setUserFocus(true)}
+        onBlur={() => setUserFocus(false)}
+        className='form-control'
+      />
+      {/* Username */}
       <label htmlFor='username' className='form-label'>Username</label>
       <span className= {validName ? 'valid' : 'hide'}><TiTick /></span>
       <span className= {validName || !user ? 'hide' : 'valid'}><IoMdCloseCircle /></span>
