@@ -4,6 +4,8 @@ import './register.css';
 import { TiTick } from "react-icons/ti";
 import { IoMdCloseCircle } from "react-icons/io";
 import { Link } from 'react-router';
+import axios from '../api/axios';
+
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
@@ -47,17 +49,54 @@ export default function Register() {
   }, [pwd, matchPwd]);
 
   useEffect(() => {
-    setErrMsg('');  
+    setErrMsg('');
   }, [user, pwd, matchPwd]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    //If submit button is enables with JS hack
+    const v1 = USER_REGEX.test(user);
+    const v2 = PWD_REGEX.test(pwd);
+    if(!v1 || !v2) {
+      setErrMsg('Invalid Entry');
+      return false;
+    } else {
+      setSucess(true)
+    }
+    try {
+      const response = await axios.post('/register', {user, pwd},
+        {
+          headers : {'Content-type' : 'application/json'},
+          withCredentials : true
+        }
+      );
+      console.log(response?.data);
+      setSucess(true);
+    } catch(err) {
+      if(!err?.response) {
+        setErrMsg('No Server Response');
+      }
+      setErrMsg(err?.response?.data?.message);
+      errRef.current.focus();
+    }
+  }
 
   return (
     <section id = "register-container">
-      <p ref = {errRef} className= {errMsg ? "errmsg" : "offscreen"} aria-live = "assertive">
+        {success ? (
+          <div className='register-page'>
+          <h1>Success !!</h1>
+          <span>
+            <Link to  = '/login'><a href="#">Sign In</a></Link>
+          </span>
+          </div>
+        ) : (
+      <div className='register-page'>
+      <h1>Register</h1>
+      <p ref = {errRef} className= {errMsg ? "alert alert-danger" : "offscreen"} aria-live = "assertive">
         {errMsg}
       </p>
-      <div id='register-page'>
-      <h1>Register</h1>
-      <form>
+      <form onSubmit={handleSubmit}>
       <label htmlFor='username' className='form-label'>Username</label>
       <span className= {validName ? 'valid' : 'hide'}><TiTick /></span>
       <span className= {validName || !user ? 'hide' : 'valid'}><IoMdCloseCircle /></span>
@@ -129,8 +168,9 @@ export default function Register() {
         <span>
             <Link to  = '/login'><a href="#">Sign In</a></Link>
         </span>
-      </p>
+        </p> 
       </div>
+      )}
     </section>
   )
 }

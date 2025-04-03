@@ -45,7 +45,7 @@ export default function Login() {
               onChange={(e) => setPwd(e.target.value)}
               className='form-control'
             />
-            <button id = 'submit' className="btn btn-primary" disabled={user && pwd ? true : false}>Sign Up</button>
+            <button id = 'submit' className="btn btn-primary" disabled={user && pwd ? false : true}>Sign Up</button>
             </form>
             <p>
               New User ?<br />
