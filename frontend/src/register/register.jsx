@@ -61,22 +61,26 @@ export default function Register() {
       setErrMsg('Invalid Entry');
       return false;
     } else {
-      setSucess(true)
+      setSucess(true);
     }
     try {
       const response = await axios.post('/register', {user, pwd},
         {
-          headers : {'Content-type' : 'application/json'},
+          headers : {'Content-Type' : 'application/json'},
           withCredentials : true
         }
       );
-      console.log(response?.data);
+      console.log('Registed Data',response?.data);
       setSucess(true);
+      //clear state and controlled inputs
+      setUser('');
+      setPwd('');
+      setMatchPwd('');
     } catch(err) {
       if(!err?.response) {
         setErrMsg('No Server Response');
       }
-      setErrMsg(err?.response?.data?.message);
+      setErrMsg(err?.response?.data?.errors);
       errRef.current.focus();
     }
   }

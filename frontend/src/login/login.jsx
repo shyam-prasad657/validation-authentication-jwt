@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import './login.css';
-
+import axios from '../api/axios';
+import AuthContext from '../context/AuthProvider';
 
 export default function Login() {
+  const { setAuth } = useContext(AuthContext);
     const userRef = useRef();
     const errRef = useRef();
 
@@ -19,14 +21,53 @@ export default function Login() {
     useEffect(() => {
         setErrMsg('');
     }, [user, pwd]);
+
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      if (user && pwd) {
+        setSuccess(true);
+      }
+      try {
+        const response = await axios.post('/login',
+          {user, pwd},
+          { params : {user}},
+          {
+            headers : {'Content-Type' : 'application/json'},
+            withCredentials : true
+          }
+        );
+        console.log('Login data', response?.data);
+        const accessToken = response?.data?.accessToken;
+        const roles = response?.data?.roles;
+        setAuth({ user, pwd, roles, accessToken });
+        setUser('');
+        setPwd('');
+        setSuccess(true);
+      }
+     catch(err) {
+      if(!err?.response) {
+        setErrMsg('No server response');
+      }
+      setErrMsg(err?.response?.data?.errors);
+      errRef.current.focus();
+    }
+  }
   return (
       <section id = "login-container">
-            <p ref = {errRef} className= {errMsg ? "errmsg" : "offscreen"} aria-live = "assertive">
+        {success ? (
+          <div className='login-page'>
+            <h1>Your are logged in</h1>
+            <span>
+              <Link to  = '/home'><a href="#">Go to home</a></Link>
+            </span>
+          </div>
+        ) : (
+            <div className='login-page'>
+            <h1>Login</h1>
+            <p ref = {errRef} className= {errMsg ? "alert alert-danger" : "offscreen"} aria-live = "assertive">
               {errMsg}
             </p>
-            <div id='login-page'>
-            <h1>Login</h1>
-            <form>
+            <form onSubmit={handleSubmit}>
             <label htmlFor='username' className='form-label'>Username</label>
             <input
               type = "text"
@@ -54,6 +95,7 @@ export default function Login() {
               </span>
             </p>
             </div>
+            )}
     </section>
   )
 }
