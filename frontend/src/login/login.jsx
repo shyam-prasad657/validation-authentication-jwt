@@ -58,7 +58,7 @@ export default function Login() {
           <div className='login-page'>
             <h1>Your are logged in</h1>
             <span>
-              <Link to  = '/home'><a href="#">Go to home</a></Link>
+              <Link to  = '/home'>Go to home</Link>
             </span>
           </div>
         ) : (
@@ -91,7 +91,7 @@ export default function Login() {
             <p>
               New User ?<br />
               <span>
-                  <Link to  = '/register'><a href="#">Resgister</a></Link>
+                  <Link to  = '/register'>Resgister</Link>
               </span>
             </p>
             </div>

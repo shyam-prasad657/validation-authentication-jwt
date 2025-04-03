@@ -35,15 +35,11 @@ export default function Register() {
 
   useEffect(() => {
     const result = USER_REGEX.test(user);
-    console.log('Result: ',result);
-    console.log('User: ',user);
     setValidName(result);
   }, [user]);
 
   useEffect(() => {
     const result = PWD_REGEX.test(pwd);
-    console.log('Result: ',result);
-    console.log('Password: ',user);
     setValidPwd(result);
     const match = pwd === matchPwd;
     setValidMatch(match);
@@ -61,8 +57,6 @@ export default function Register() {
     if(!v1 || !v2 || !email) {
       setErrMsg('Invalid Entry');
       return false;
-    } else {
-      setSucess(true);
     }
     try {
       const response = await axios.post('/register', {user, pwd, email},
@@ -92,7 +86,7 @@ export default function Register() {
           <div className='register-page'>
           <h1>Success !!</h1>
           <span>
-            <Link to  = '/login'><a href="#">Sign In</a></Link>
+            <Link to  = '/login'>Sign In</Link>
           </span>
           </div>
         ) : (
@@ -184,7 +178,7 @@ export default function Register() {
       <p>
         Already registered?<br />
         <span>
-            <Link to  = '/login'><a href="#">Sign In</a></Link>
+            <Link to  = '/login'>Sign In</Link>
         </span>
         </p> 
       </div>
