@@ -13,9 +13,7 @@ function App() {
       <Routes>
       <Route path = '/register' element={<Register />} />
       <Route path = '/login' element={<Login />} />
-    <AuthProvider>
       <Route path = '/home' element = {<Home />} />
-    </AuthProvider>
       </Routes>
     </main>
     </BrowserRouter>

@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { RegisterRoutes } = require('./routes/register');
+const { LoginRoutes } = require('./routes/login');
 
 const app = express();
 app.use(cors({
@@ -15,6 +16,7 @@ app.get('/', (req, res)=> {
 })
 
 app.use('/', RegisterRoutes);
+app.use('/', LoginRoutes);
 
 app.listen(3500, ()=> {
     console.log("listening...");

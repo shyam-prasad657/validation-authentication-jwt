@@ -2,10 +2,9 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import './login.css';
 import axios from '../api/axios';
-import AuthContext from '../context/AuthProvider';
 
 export default function Login() {
-    const { setAuth } = useContext(AuthContext);
+  const [user, setUser] = useState()
     const emailRef = useRef();
     const errRef = useRef();
 
@@ -24,34 +23,31 @@ export default function Login() {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      if (email && pwd) {
-        setSuccess(true);
+      if (!email || !pwd) {
+        setErrMsg('Invalid Entry');
+        return false;
       }
       try {
-        const response = await axios.post('/login',
-          {email, pwd},
-          { params : {email}},
+        const response = await axios.post('/login', {email, pwd},
           {
             headers : {'Content-Type' : 'application/json'},
             withCredentials : true
           }
         );
-        console.log('Login data', response?.data);
-        const accessToken = response?.data?.accessToken;
-        const roles = response?.data?.roles;
-        const email = response?.data?.email;
-        const pwd = response?.data?.pwd;
-        const username = response?.data?.username;
-
-        setAuth({ email, pwd, roles, accessToken, username });
-        setUser('');
-        setPwd('');
+        if(response?.data?.message === 'Logged in Sucessfully') {
+          const { accessToken, roles, email, username } = response?.data;
+          setUser({ email, roles, accessToken, username });
+          console.log('sucess');
+        }
         setSuccess(true);
+        setEmail('');
+        setPwd('');
       }
      catch(err) {
       if(!err?.response) {
         setErrMsg('No server response');
       }
+      console.error(err?.response)
       setErrMsg(err?.response?.data?.errors);
       errRef.current.focus();
     }
@@ -61,6 +57,7 @@ export default function Login() {
         {success ? (
           <div className='login-page'>
             <h1>Your are logged in</h1>
+            {user?.username}
             <span>
               <Link to  = '/home'>Go to home</Link>
             </span>
@@ -72,7 +69,7 @@ export default function Login() {
               {errMsg}
             </p>
             <form onSubmit={handleSubmit}>
-              <label htmlFor = 'email' className='form-label'>Username</label>
+              <label htmlFor = 'email' className='form-label'>Email ID</label>
             <input
               type = "email"
               id = "email"
