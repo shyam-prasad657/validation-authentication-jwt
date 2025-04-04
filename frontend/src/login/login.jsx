@@ -5,32 +5,32 @@ import axios from '../api/axios';
 import AuthContext from '../context/AuthProvider';
 
 export default function Login() {
-  const { setAuth } = useContext(AuthContext);
-    const userRef = useRef();
+    const { setAuth } = useContext(AuthContext);
+    const emailRef = useRef();
     const errRef = useRef();
 
-    const [user, setUser] = useState('');
+    const [email, setEmail] = useState('');
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
 
     useEffect(() => {
-        userRef.current.focus();
+        emailRef.current.focus();
     }, []);
 
     useEffect(() => {
         setErrMsg('');
-    }, [user, pwd]);
+    }, [email, pwd]);
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      if (user && pwd) {
+      if (email && pwd) {
         setSuccess(true);
       }
       try {
         const response = await axios.post('/login',
-          {user, pwd},
-          { params : {user}},
+          {email, pwd},
+          { params : {email}},
           {
             headers : {'Content-Type' : 'application/json'},
             withCredentials : true
@@ -39,7 +39,11 @@ export default function Login() {
         console.log('Login data', response?.data);
         const accessToken = response?.data?.accessToken;
         const roles = response?.data?.roles;
-        setAuth({ user, pwd, roles, accessToken });
+        const email = response?.data?.email;
+        const pwd = response?.data?.pwd;
+        const username = response?.data?.username;
+
+        setAuth({ email, pwd, roles, accessToken, username });
         setUser('');
         setPwd('');
         setSuccess(true);
@@ -68,13 +72,13 @@ export default function Login() {
               {errMsg}
             </p>
             <form onSubmit={handleSubmit}>
-            <label htmlFor='username' className='form-label'>Username</label>
+              <label htmlFor = 'email' className='form-label'>Username</label>
             <input
-              type = "text"
-              id = "username"
-              ref = {userRef}
+              type = "email"
+              id = "email"
+              ref = {emailRef}
               required
-              onChange={(e) => setUser(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               className='form-control'
             />
             {/* Password */}
@@ -86,7 +90,7 @@ export default function Login() {
               onChange={(e) => setPwd(e.target.value)}
               className='form-control'
             />
-            <button id = 'submit' className="btn btn-primary" disabled={user && pwd ? false : true}>Sign Up</button>
+            <button id = 'submit' className="btn btn-primary" disabled={email && pwd ? false : true}>Sign Up</button>
             </form>
             <p>
               New User ?<br />
