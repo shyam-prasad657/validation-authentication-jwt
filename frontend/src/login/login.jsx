@@ -2,9 +2,10 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import './login.css';
 import axios from '../api/axios';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Login() {
-  const [user, setUser] = useState()
+  const { auth, setAuth } = useAuth();
     const emailRef = useRef();
     const errRef = useRef();
 
@@ -36,7 +37,7 @@ export default function Login() {
         );
         if(response?.data?.message === 'Logged in Sucessfully') {
           const { accessToken, roles, email, username } = response?.data;
-          setUser({ email, roles, accessToken, username });
+          setAuth({ email, roles, accessToken, username });
           console.log('sucess');
         }
         setSuccess(true);
@@ -57,7 +58,7 @@ export default function Login() {
         {success ? (
           <div className='login-page'>
             <h1>Your are logged in</h1>
-            {user?.username}
+            {auth?.username}
             <span>
               <Link to  = '/home'>Go to home</Link>
             </span>
