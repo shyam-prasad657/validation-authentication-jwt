@@ -1,18 +1,22 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation, useNavigate } from 'react-router';
 import './login.css';
 import axios from '../api/axios';
 import { useAuth } from '../hooks/useAuth';
 
 export default function Login() {
   const { auth, setAuth } = useAuth();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/home';
+
     const emailRef = useRef();
     const errRef = useRef();
 
     const [email, setEmail] = useState('');
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
         emailRef.current.focus();
@@ -39,8 +43,8 @@ export default function Login() {
           const { accessToken, roles, email, username } = response?.data;
           setAuth({ email, roles, accessToken, username });
           console.log('sucess');
+          navigate(from, {replace : true})
         }
-        setSuccess(true);
         setEmail('');
         setPwd('');
       }
@@ -55,15 +59,6 @@ export default function Login() {
   }
   return (
       <section id = "login-container">
-        {success ? (
-          <div className='login-page'>
-            <h1>Your are logged in</h1>
-            {auth?.username}
-            <span>
-              <Link to  = '/home'>Go to home</Link>
-            </span>
-          </div>
-        ) : (
             <div className='login-page'>
             <h1>Login</h1>
             <p ref = {errRef} className= {errMsg ? "alert alert-danger" : "offscreen"} aria-live = "assertive">
@@ -97,7 +92,6 @@ export default function Login() {
               </span>
             </p>
             </div>
-            )}
     </section>
   )
 }
