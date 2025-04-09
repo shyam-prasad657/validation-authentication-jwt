@@ -9,7 +9,7 @@ export default function Login() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || '/home';
+  const from = location.state?.from?.pathname;
 
     const emailRef = useRef();
     const errRef = useRef();
@@ -42,8 +42,8 @@ export default function Login() {
         if(response?.data?.message === 'Logged in Sucessfully') {
           const { accessToken, roles, email, username } = response?.data;
           setAuth({ email, roles, accessToken, username });
-          console.log('sucess');
-          navigate(from, {replace : true})
+          console.log('navigate',from);
+          navigate('/home', {replace : true})
         }
         setEmail('');
         setPwd('');
