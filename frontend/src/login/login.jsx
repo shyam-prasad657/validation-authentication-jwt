@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import './login.css';
-import axios from '../api/axios';
+import axiosInstance from '../api/axios';
 import { useAuth } from '../hooks/useAuth';
 
 export default function Login() {
@@ -33,15 +33,16 @@ export default function Login() {
         return false;
       }
       try {
-        const response = await axios.post('/login', {email, pwd},
+        const response = await axiosInstance.post('/login', {email, pwd},
           {
             headers : {'Content-Type' : 'application/json'},
             withCredentials : true
           }
         );
         if(response?.data?.message === 'Logged in Sucessfully') {
-          const { accessToken, roles, email, username } = response?.data;
-          setAuth({ email, roles, accessToken, username });
+          const { accessToken, user } = response?.data;
+          localStorage.setItem("token", accessToken)
+          setAuth({ accessToken, user });
           console.log('navigate',from);
           navigate('/home', {replace : true})
         }

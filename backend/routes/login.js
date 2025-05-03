@@ -28,19 +28,45 @@ router.post('/login', async (req, res) => {
         }
 
         //Generate JWT
-        const token = jwt.sign(
-            { userId: user.id, username: user.username },
+        const accessToken = jwt.sign(
+            { userId: user.id, username: user.username, roles : user.role },
             process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN }
+            { expiresIn: process.env.ACCESS_EXPIRES_IN } //short-lived
         );
-        console.log(token)
-        return res.status(200).json({message : 'Logged in Sucessfully',
+
+        const refreshToken = jwt.sign(
+            { userId : user.id, username:user.username, roles : user.role },
+            process.env.JWT_REFRESH_SECRET,
+            { expiresIn: process.env.REFRESH_EXPIRE_IN } //long-lived
+        )
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly : true,
+            secure : false, //use true if using https
+            sameSite : 'strict',
+            maxAge : 7 * 24 * 60 * 60 * 1000, // 7 days
+        })
+        console.log("Refresh Token",refreshToken);
+        
+        return res.status(200).json({
+            message : 'Logged in Sucessfully',
+            accessToken : accessToken,
+            user : {
             username : user.username,
-            roles : user.role,
-            email : user.email,
-            accessToken : token
+            roles : user.role
+            }
         })
     })
+});
+
+//Logout Route
+router.post('/logout', (req, res) => {
+    res.clearCookie("refreshToken", {
+        httpOnly : true,
+        secure : false,
+        sameSite : 'strict'
+    });
+    res.sendStatus(200);
 })
 
 module.exports = { LoginRoutes : router }
