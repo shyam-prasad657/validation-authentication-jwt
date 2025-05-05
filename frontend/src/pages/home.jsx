@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAuth } from '../hooks/useAuth';
 import { Link } from 'react-router';
 import axiosInstance from '../api/axios';
@@ -10,9 +10,24 @@ const Home = () => {
           localStorage.removeItem('token');
           setAuth({});
         }
+        const x = auth?.refresh_expiry/1000;
+        const [time, setTime] = useState(x)
+        useEffect(() => {
+          const timer = setInterval(() => {
+            setTime(prev => {
+              if(prev === 0) {
+                clearInterval(timer);
+                logout();
+                return false;
+              }
+              return prev - 1;
+            })
+          },1000)
+          return () => clearInterval(timer); // Clean-up on unmount
+        },[])
   return (
     <div>
-      <h1>Welcome Home {auth?.user?.username}</h1>
+      <h1>Welcome Home {auth?.user?.username} {time}</h1>
       <Link to = '/admin'>go to admin</Link>
       <Link to = '/view'>go to view</Link>
 

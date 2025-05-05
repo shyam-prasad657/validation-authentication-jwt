@@ -3,6 +3,7 @@ require("dotenv").config(); // Load secret key from .env
 const jwt = require("jsonwebtoken"); // Import JWT
 const bcrypt = require("bcryptjs");
 const db = require('../config/db');
+const ms = require('ms');
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
@@ -26,7 +27,7 @@ router.post('/login', async (req, res) => {
         if(!isMatch) {
             return res.status(401).json({errors : "Invalid Password"});
         }
-
+        const REFRESH_TOKEN_EXPIRY_MS = ms(process.env.REFRESH_EXPIRE_IN);
         //Generate JWT
         const accessToken = jwt.sign(
             { userId: user.id, username: user.username, roles : user.role },
@@ -37,14 +38,14 @@ router.post('/login', async (req, res) => {
         const refreshToken = jwt.sign(
             { userId : user.id, username:user.username, roles : user.role },
             process.env.JWT_REFRESH_SECRET,
-            { expiresIn: process.env.REFRESH_EXPIRE_IN } //long-lived
+            { expiresIn: REFRESH_TOKEN_EXPIRY_MS } //long-lived
         )
 
         res.cookie("refreshToken", refreshToken, {
             httpOnly : true,
             secure : false, //use true if using https
             sameSite : 'strict',
-            maxAge : 7 * 24 * 60 * 60 * 1000, // 7 days
+            maxAge : REFRESH_TOKEN_EXPIRY_MS, // 7 days
         })
         console.log("Refresh Token",refreshToken);
         
@@ -54,7 +55,8 @@ router.post('/login', async (req, res) => {
             user : {
             username : user.username,
             roles : user.role
-            }
+            },
+            refresh_expiry : REFRESH_TOKEN_EXPIRY_MS
         })
     })
 });

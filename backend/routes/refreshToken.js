@@ -3,6 +3,7 @@ require("dotenv").config(); // Load secret key from .env
 const jwt = require("jsonwebtoken"); // Import JWT
 const bcrypt = require("bcryptjs");
 const db = require('../config/db');
+const ms = require('ms');
 const router = express.Router();
 
 router.get('/refresh-token', (req, res) => {
@@ -14,6 +15,7 @@ router.get('/refresh-token', (req, res) => {
             return res.sendStatus(403); //invalid refresh token
         }
         console.log('reload error',err)
+        const REFRESH_TOKEN_EXPIRY_MS = ms(process.env.REFRESH_EXPIRE_IN);
         const newAccessToken = jwt.sign(
             { userId: decoded.userId, username: decoded.username, roles: decoded.roles },
             process.env.JWT_SECRET,
@@ -25,7 +27,8 @@ router.get('/refresh-token', (req, res) => {
             user : {
                 username : decoded.username,
                 roles : decoded.roles
-            }
+            },
+            refresh_expiry : REFRESH_TOKEN_EXPIRY_MS
         });
     })
 })

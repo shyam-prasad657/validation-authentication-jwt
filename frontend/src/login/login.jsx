@@ -40,9 +40,10 @@ export default function Login() {
           }
         );
         if(response?.data?.message === 'Logged in Sucessfully') {
-          const { accessToken, user } = response?.data;
+          const { accessToken, user, refresh_expiry } = response?.data;
           localStorage.setItem("token", accessToken)
-          setAuth({ accessToken, user });
+          setAuth({ accessToken, user, refresh_expiry });
+          console.log('after login',JSON.stringify(refresh_expiry));
           console.log('navigate',from);
           navigate('/home', {replace : true})
         }
@@ -89,7 +90,7 @@ export default function Login() {
             <p>
               New User ?<br />
               <span>
-                  <Link to  = '/register'>Resgister</Link>
+                  <Link to  = '/'>Resgister</Link>
               </span>
             </p>
             </div>
