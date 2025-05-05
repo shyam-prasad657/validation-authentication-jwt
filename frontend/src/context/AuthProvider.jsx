@@ -19,6 +19,7 @@ export const AuthProvider = ({children}) => {
                 console.log('After reload',JSON.stringify(auth?.user?.roles))
             } catch(err) {
                 setAuth({});
+                localStorage.removeItem('token')
                 console.log('Session not restored', err);
             } finally {
                 setLoading(false)

@@ -22,10 +22,11 @@ axiosInstance.interceptors.request.use(async (config) => {
             try {
                 const res = await axios.get('/refresh-token');
                 const newAccessToken = res.data.accessToken;
-                alert('Access Token Expired');
                 localStorage.setItem('token', newAccessToken);
                 config.headers["Authorization"] = `Bearer ${newAccessToken}`;
             } catch(err) {
+                alert('Access Token Expired');
+                localStorage.removeItem('token');
                 console.error('Refresh failed', err);
             } finally {
                 isRefreshing = false;
