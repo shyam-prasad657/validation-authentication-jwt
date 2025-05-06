@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router';
 import './login.css';
 import axiosInstance from '../api/axios';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../context/AuthProvider';
 
 export default function Login() {
   const { auth, setAuth } = useAuth();

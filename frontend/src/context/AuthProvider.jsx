@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import axiosInstance from "../api/axios";
 
 const AuthContext = createContext({});
@@ -34,4 +34,6 @@ export const AuthProvider = ({children}) => {
     )
 }
 
-export default AuthContext;
+export const useAuth = () => {
+    return useContext(AuthContext);
+}

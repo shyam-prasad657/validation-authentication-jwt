@@ -1,6 +1,6 @@
 import React from 'react'
-import { useAuth } from '../hooks/useAuth'
 import { Link } from 'react-router';
+import { useAuth } from '../context/AuthProvider';
 
 
 const Admin = () => {

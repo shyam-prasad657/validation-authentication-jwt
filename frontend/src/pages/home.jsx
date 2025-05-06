@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useAuth } from '../hooks/useAuth';
 import { Link } from 'react-router';
 import axiosInstance from '../api/axios';
+import { useAuth } from '../context/AuthProvider';
 
 const Home = () => {
         const { auth, setAuth } = useAuth();
