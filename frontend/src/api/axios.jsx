@@ -26,7 +26,7 @@ axiosInstance.interceptors.request.use(async (config) => {
                 config.headers["Authorization"] = `Bearer ${newAccessToken}`;
             } catch(err) {
                 alert('Access Token Expired');
-                localStorage.removeItem('token');
+                localStorage.clear(); // optional: clear token and expiry 
                 console.error('Refresh failed', err);
             } finally {
                 isRefreshing = false;

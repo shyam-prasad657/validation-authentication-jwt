@@ -42,8 +42,9 @@ export default function Login() {
         if(response?.data?.message === 'Logged in Sucessfully') {
           const { accessToken, user, refresh_expiry } = response?.data;
           localStorage.setItem("token", accessToken)
-          setAuth({ accessToken, user, refresh_expiry });
-          console.log('after login',JSON.stringify(refresh_expiry));
+          localStorage.setItem("refreshExpiry", refresh_expiry)
+          setAuth({ accessToken, user });
+          console.log('after login',JSON.stringify(accessToken));
           console.log('navigate',from);
           navigate('/home', {replace : true})
         }

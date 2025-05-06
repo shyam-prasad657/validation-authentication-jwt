@@ -7,11 +7,10 @@ const Home = () => {
         const { auth, setAuth } = useAuth();
         const logout = async () => {
           await axiosInstance.post('http://localhost:3500/logout',{},{ withCredentials : true });
-          localStorage.removeItem('token');
+          localStorage.clear(); // optional: clear token and expiry 
           setAuth({});
         }
-        const x = auth?.refresh_expiry/1000;
-        const [time, setTime] = useState(x)
+        const [time, setTime] = useState(60)
         useEffect(() => {
           const timer = setInterval(() => {
             setTime(prev => {

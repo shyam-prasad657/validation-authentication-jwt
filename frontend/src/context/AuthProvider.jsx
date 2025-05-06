@@ -12,14 +12,13 @@ export const AuthProvider = ({children}) => {
         const restoreAuth = async () => {
             try {
                 const response = await axiosInstance.get('/refresh-token');
-                const { accessToken, user, refresh_expiry } = response.data;
-                console.log('Logged in data',JSON.stringify(response?.data));
+                const { accessToken, user } = response.data;
+                console.log('Logged in data after refresh',JSON.stringify(response?.data));
                 localStorage.setItem('token',accessToken)
-                setAuth({ accessToken, user, refresh_expiry });
-                console.log('After reload',JSON.stringify(refresh_expiry))
+                setAuth({ accessToken, user });
             } catch(err) {
                 setAuth({});
-                localStorage.removeItem('token');
+                localStorage.clear(); // optional: clear token and expiry
                 console.log('Session not restored', err);
             } finally {
                 setLoading(false)

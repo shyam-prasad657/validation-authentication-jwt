@@ -8,8 +8,16 @@ const RequireAuth = ({allowedRoles}) => {
     if (loading) {
       return <div>Loading...</div>; // or a spinner
     }
-    const x = auth?.user?.roles
+    const x = localStorage.getItem('refreshExpiry')
     console.log('after reload in requireAuth',x)
+    const now = Date.now()
+    console.log('current date',now)
+    if( !x || now > Number(x)) {
+      console.log('Refresh token expired. Logging out.');
+      localStorage.clear(); // optional: clear token and expiry
+      console.log('Auth value while logout',auth)
+      return <Navigate to='/login' state={{ from: location }} replace />
+    }
 
   return (
     allowedRoles?.includes(auth?.user?.roles)

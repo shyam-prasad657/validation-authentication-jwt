@@ -48,7 +48,8 @@ router.post('/login', async (req, res) => {
             maxAge : REFRESH_TOKEN_EXPIRY_MS, // 7 days
         })
         console.log("Refresh Token",refreshToken);
-        
+        const fixed_date = Date.now();
+        const refresh_expiry = fixed_date + REFRESH_TOKEN_EXPIRY_MS;
         return res.status(200).json({
             message : 'Logged in Sucessfully',
             accessToken : accessToken,
@@ -56,7 +57,7 @@ router.post('/login', async (req, res) => {
             username : user.username,
             roles : user.role
             },
-            refresh_expiry : REFRESH_TOKEN_EXPIRY_MS
+            refresh_expiry : refresh_expiry
         })
     })
 });
