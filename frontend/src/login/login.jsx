@@ -44,7 +44,7 @@ export default function Login() {
           localStorage.setItem("token", accessToken)
           localStorage.setItem("refreshExpiry", refresh_expiry)
           setAuth({ accessToken, user });
-          console.log('after login',JSON.stringify(accessToken));
+          console.log('after login Token expiry time',new Date(Number(refresh_expiry)).toLocaleString());
           console.log('navigate',from);
           navigate('/home', {replace : true})
         }
